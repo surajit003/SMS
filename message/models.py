@@ -7,6 +7,7 @@ class Gateway(models.Model):
     account_number = models.CharField(
         max_length=100, help_text=_("accountnumber,username,accountid,apikey")
     )
+    api_url = models.URLField(null=True, blank=True)
     password = models.CharField(max_length=100)
     configured_sender = models.CharField(max_length=120)
     active = models.BooleanField(default=False)
