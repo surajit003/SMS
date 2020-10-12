@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from .utils import format_comment
 
 
 class Gateway(models.Model):
@@ -18,3 +19,22 @@ class Gateway(models.Model):
 
     def __str__(self):
         return "{}{}".format(self.name, self.active)
+
+
+class Message(models.Model):
+    SUCCESS = "1"
+    FAILURE = "0"
+
+    status_message = ((SUCCESS, "success"), (FAILURE, "failure"))
+    gateway = models.ForeignKey(Gateway, on_delete=models.CASCADE)
+    status = models.CharField(max_length=20, choices=status_message)
+    partner_message_id = models.CharField(max_length=80)
+    status_code = models.IntegerField()
+    recipient = models.CharField(max_length=40)
+    response = models.TextField()
+
+    def __str__(self):
+        return self.partner_message_id
+
+    def append_comment(self, prefix, comment):
+        self.comments = format_comment(self.comments, prefix, comment)
