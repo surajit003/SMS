@@ -22,12 +22,8 @@ class Gateway(models.Model):
 
 
 class Message(models.Model):
-    SUCCESS = "1"
-    FAILURE = "0"
-
-    status_message = ((SUCCESS, "success"), (FAILURE, "failure"))
     gateway = models.ForeignKey(Gateway, on_delete=models.CASCADE)
-    status = models.CharField(max_length=20, choices=status_message)
+    status = models.CharField(max_length=40)
     partner_message_id = models.CharField(max_length=80)
     status_code = models.IntegerField()
     recipient = models.CharField(max_length=40)
@@ -37,4 +33,5 @@ class Message(models.Model):
         return self.partner_message_id
 
     def append_comment(self, prefix, comment):
-        self.comments = format_comment(self.comments, prefix, comment)
+        self.response = format_comment(self.response, prefix, comment)
+        print('s',self.response)

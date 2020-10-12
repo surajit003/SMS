@@ -23,10 +23,10 @@ class ValidatePhoneNumber:
 
 def format_comment(existing_comment, prefix, new_comment):
     if existing_comment:
-        new_comment = u"{} {} [{}] {}".format(
+        f_comment = u"{} {} [{}] {}".format(
             existing_comment, now, prefix, new_comment
         )
-        return new_comment
+        return f_comment
     else:
-        new_comment = u"{} [{}] {}".format(existing_comment, now, prefix, new_comment)
-        return new_comment
+        f_comment = u"{} {} [{}] {}".format(existing_comment, now, prefix, new_comment)
+        return f_comment
