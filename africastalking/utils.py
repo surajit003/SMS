@@ -7,10 +7,21 @@ import json
 logger = logging.getLogger(__name__)
 
 
+def validate_recipients(recipient):
+    validate_phone = ValidatePhoneNumber()
+    valid_nos = []
+    if isinstance(recipient, list):
+        for number in recipient:
+            if validate_phone(number):
+                valid_nos.append(number)
+        return valid_nos
+
+
 def send_sms_via_at(recipient, message, account_name=None):
     log_prefix = "SEND SMS VIA AT"
-    validate_phone = ValidatePhoneNumber()
-    if validate_phone(recipient):
+    if len(validate_recipients(recipient)) != 0:
+        recipient = validate_recipients(recipient)
+        recipient = ",".join(recipient)
         try:
             if account_name:
                 gateway = Gateway.objects.get(
@@ -23,21 +34,20 @@ def send_sms_via_at(recipient, message, account_name=None):
         except Gateway.MultipleObjectsReturned:
             raise Exception("Multiple Gateway found for {}".format(recipient))
         else:
-            data = json.dumps(
-                {
-                    "username": gateway.account_number,
-                    "to": [recipient],
-                    "message": message,
-                    "from": gateway.configured_sender,
-                }
-            )
+            data = {
+                "username": gateway.account_number,
+                "to": recipient,
+                "message": message,
+            }
+
             headers = {
                 "apikey": str(gateway.password),
-                "content-type": "application/json",
+                "content-type": "application/x-www-form-urlencoded",
+                "accept": "application/json",
             }
             response = requests.post(gateway.api_url, headers=headers, data=data)
             logger.info("{}-{}".format(log_prefix, response))
+            print("response", response.content)
             return response
-
     else:
-        raise Exception
+        return
