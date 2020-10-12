@@ -45,18 +45,18 @@ def send_sms_via_at(recipient, message, account_name=None):
                 "content-type": "application/x-www-form-urlencoded",
                 "accept": "application/json",
             }
-            response = requests.post(gateway.api_url, headers=headers, data=data)
+            response = send_sms_request(gateway.api_url,headers,data)
             logger.info("{}-{}".format(log_prefix, response))
             if response.status_code == 201:
-                parse_and_save_response(json.loads(response.content)) #make it a celery task recommended
-            return response
+                parse_and_save_response(json.loads(response.content))  # make it a celery task recommended
+                return json.loads(response.content)
     else:
         return
 
 
 def parse_and_save_response(response):
     log_prefix = 'PARSE AND SAVE RESPONSE'
-    logging.info('{} {}'.format(log_prefix,response))
+    logging.info('{} {}'.format(log_prefix, response))
     try:
         messagedata = response['SMSMessageData']
         recipients = messagedata['Recipients']
@@ -72,4 +72,10 @@ def parse_and_save_response(response):
             message.append_comment('DLR', response)
             message.save()
     except KeyError as ex:
-        logger.exception('{} {} {}'.format(log_prefix,'Missing Key', ex))
+        logger.exception('{} {} {}'.format(log_prefix, 'Missing Key', ex))
+
+
+def send_sms_request(url, headers, data):
+    response = requests.post(url, headers=headers, data=data)
+    content = response.content
+    return content
