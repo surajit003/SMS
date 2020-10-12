@@ -34,4 +34,3 @@ class Message(models.Model):
 
     def append_comment(self, prefix, comment):
         self.response = format_comment(self.response, prefix, comment)
-        print('s',self.response)
