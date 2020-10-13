@@ -60,7 +60,6 @@ def parse_and_save_response(response):
     log_prefix = "PARSE AND SAVE RESPONSE"
     logging.info("{} {}".format(log_prefix, response))
     try:
-        print("response", response)
         messagedata = response["SMSMessageData"]
         recipients = messagedata["Recipients"]
         gateway = Gateway.objects.get(name="Africastalking")
