@@ -1,5 +1,5 @@
 from django.test import TestCase
-from .utils import send_sms_request, send_sms_via_at
+from .utils import send_sms_request, send_sms_via_at,validate_recipients
 from mock import patch, Mock
 from message.models import Gateway
 from django.conf import settings
@@ -57,3 +57,15 @@ class SMSTaskTests(TestCase):
             mock_response.status_code = 201
             actual_response = send_sms_via_at(recipient, "hello world")
             self.assertEqual(actual_response, json.loads(fake_response))
+
+    def test_validate_recipients_with_valid_phone_numbers(self):
+        recipients = ['+254771621351','+254771621352']
+        self.assertEqual(validate_recipients(recipients),recipients)
+
+    def test_validate_recipients_with_validandinvalidphonenumbers(self):
+        recipients = ['+828299292','+254771621352']
+        self.assertEqual(validate_recipients(recipients),['+254771621352'])
+
+
+
+
