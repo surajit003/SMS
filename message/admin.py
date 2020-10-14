@@ -1,5 +1,5 @@
 from django.contrib import admin
-from message.models import Gateway, Message
+from message.models import Gateway, Message, FileUpload
 
 # Register your models here.
 @admin.register(Gateway)
@@ -19,3 +19,11 @@ class MessageAdmin(admin.ModelAdmin):
         "recipient",
     )
     search_fields = ("partner_message_id", "recipient")
+
+
+@admin.register(FileUpload)
+class FileUploadAdmin(admin.ModelAdmin):
+    list_display = (
+        "name",
+        "document",
+    )

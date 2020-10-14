@@ -34,3 +34,12 @@ class Message(models.Model):
 
     def append_comment(self, prefix, comment):
         self.response = format_comment(self.response, prefix, comment)
+
+
+class FileUpload(models.Model):
+    name = models.CharField(max_length=255, blank=True)
+    document = models.FileField(upload_to="documents/")
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return u"{}{}".format(self.id, self.name)
