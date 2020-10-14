@@ -21,10 +21,10 @@ class SMSTaskTests(TestCase):
     def test_send_sms_request(self):
         with patch.object(requests, "post") as mock_obj:
             mock_obj.return_value = mock_response = Mock()
-            mock_response.status_code = 201
-            test_headers = {}
-            actual_response, code = send_sms_request("", test_headers, "")
-            self.assertEqual(code, 201)
+            mock_response.status_code=201
+            resp,status_code=send_sms_request('','','')
+            self.assertEqual(resp,mock_response)
+            self.assertEqual(status_code,201)
 
     def test_sms_via_at(self):
         recipient = ["+254728282828", "+25472383883"]
