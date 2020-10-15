@@ -1,6 +1,9 @@
 from message.models import FileUpload
 import csv
 from africastalking.utils import send_sms_via_at
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class Upload:
@@ -44,6 +47,7 @@ class BulkSMSUpload(Upload):
             line_number += 1
 
     def trigger_sms(self):
+        log_prefix = "TRIGGER SMS"
         try:
             file = FileUpload.objects.get(id=self.file_id)
             with open(file.document.path, "r") as f:
@@ -57,7 +61,11 @@ class BulkSMSUpload(Upload):
             if len(self.valid_row) > 0:
                 self.send_sms(self.valid_row)  # can be a celery process
 
-        except FileUpload.DoesNotExist:
+        except FileUpload.DoesNotExist as ex:
+            logger.exception("{} {}".format(log_prefix, ex))
+            return
+        except Exception as ex:
+            logger.exception("{} {}".format(log_prefix, ex))
             return
 
     def validate_headers(self, header):
