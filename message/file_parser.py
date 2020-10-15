@@ -54,7 +54,8 @@ class BulkSMSUpload(Upload):
                     header = next(reader)
                     if self.validate_headers(header):
                         self.__parse(reader)
-                        self.send_sms(self.valid_row)
+            if len(self.valid_row) > 0:
+                self.send_sms(self.valid_row)  # can be a celery process
 
         except FileUpload.DoesNotExist:
             return
