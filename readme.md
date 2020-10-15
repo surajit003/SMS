@@ -9,3 +9,7 @@ Following are some of the features that the application supports
 
 What can be improved
 1. Bulk Sms sending can be pushed to a celery process to free up the frontend
+
+![file_upload_demo](https://user-images.githubusercontent.com/67738912/96155401-921df280-0f18-11eb-91bf-986baabb5490.png)
+File Format- Should follow the following format for Bulk SMS
+![file_format](https://user-images.githubusercontent.com/67738912/96155558-bc6fb000-0f18-11eb-9e67-ccf191fa108f.png)
