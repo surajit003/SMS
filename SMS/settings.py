@@ -123,3 +123,5 @@ USE_TZ = True
 STATIC_URL = '/static/'
 AT_PASSWORD = config('AT_PASSWORD')
 AT_USERNAME = config('AT_USERNAME')
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
