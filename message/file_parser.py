@@ -45,9 +45,8 @@ class BulkSMSUpload(Upload):
                 self.valid_row.append(row)
 
             line_number += 1
-        self.trigger_sms(self.valid_row)
 
-    def parse(self):
+    def trigger_sms(self):
         try:
             file = FileUpload.objects.get(id=self.file_id)
             with open(file.document.path, "r") as f:
@@ -58,6 +57,7 @@ class BulkSMSUpload(Upload):
                     header = next(reader)
                     if self.validate_headers(header):
                         self.__parse(reader)
+                        self.send_sms(self.valid_row)
 
         except FileUpload.DoesNotExist:
             return
@@ -67,7 +67,7 @@ class BulkSMSUpload(Upload):
         if set(expected_header) == set(header):
             return True
 
-    def trigger_sms(self, row):
+    def send_sms(self, row):
         for data in row:
             send_sms_via_at(
                 [data[0]], data[2], "sandbox", data[1]

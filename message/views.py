@@ -15,7 +15,7 @@ def file_upload(request):
         if form.is_valid():
             instance = form.save()
             bulk_sms = BulkSMSUpload(instance.id)
-            bulk_sms.parse()
+            bulk_sms.trigger_sms()
             if bulk_sms.errors():
                 error_list = bulk_sms.error
         return render(
