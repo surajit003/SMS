@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from .forms import FileUploadForm
-from message.file_parser import validate_file_upload
+from message.file_parser import BulkSMSUpload
+
 # Create your views here.
 
 
@@ -9,9 +10,16 @@ def file_upload(request):
         form = FileUploadForm()
         return render(request, "message/file_upload.html", {"form": form})
     if request.method == "POST":
-        form = FileUploadForm(request.POST,request.FILES)
+        error_list = None
+        form = FileUploadForm(request.POST, request.FILES)
         if form.is_valid():
             instance = form.save()
-            validate_file_upload(instance.id)
-
-        return render(request, "message/file_upload.html", {"form": form})
+            bulk_sms = BulkSMSUpload(instance.id)
+            bulk_sms.parse()
+            if bulk_sms.errors():
+                error_list = bulk_sms.error
+        return render(
+            request,
+            "message/file_upload.html",
+            {"form": form, "error_list": error_list},
+        )

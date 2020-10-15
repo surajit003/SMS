@@ -24,6 +24,7 @@ class MessageAdmin(admin.ModelAdmin):
 @admin.register(FileUpload)
 class FileUploadAdmin(admin.ModelAdmin):
     list_display = (
+        "id",
         "name",
         "document",
     )

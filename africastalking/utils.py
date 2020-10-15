@@ -17,7 +17,7 @@ def validate_recipients(recipient):
         return valid_nos
 
 
-def send_sms_via_at(recipient, message, account_name=None):
+def send_sms_via_at(recipient, message, account_name=None, *args):
     log_prefix = "SEND SMS VIA AT"
     if len(validate_recipients(recipient)) != 0:
         recipient = validate_recipients(recipient)
@@ -25,7 +25,7 @@ def send_sms_via_at(recipient, message, account_name=None):
         try:
             if account_name:
                 gateway = Gateway.objects.get(
-                    name="Africastalking", account_name=account_name, active=True
+                    name="Africastalking", account_number=account_name, active=True
                 )
             else:
                 gateway = Gateway.objects.get(name="Africastalking", active=True)
