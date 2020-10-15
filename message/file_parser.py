@@ -18,9 +18,6 @@ class Upload:
     def __parse(self, reader):
         pass
 
-    def parse(self):
-        pass
-
     def errors(self):
         if len(self.error) > 0:
             return self.error
