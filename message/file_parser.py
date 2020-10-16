@@ -2,6 +2,7 @@ from message.models import FileUpload
 import csv
 from africastalking.utils import send_sms_via_at
 import logging
+import hashlib
 
 logger = logging.getLogger(__name__)
 
@@ -73,8 +74,21 @@ class BulkSMSUpload(Upload):
         if set(expected_header) == set(header):
             return True
 
+    def flood_control(self,phone_number,message):
+        val = str(phone_number)+str(message)
+        cache_key = hashlib.md5(val.encode('utf-8')).hexdigest()
+        from django.core.cache import cache
+        if cache.get(cache_key):
+            # Possible duplicate
+            raise Exception("Duplicate SMS to {} detected: {}".format(str(phone_number), message))
+        else:
+            # Cache for for 1 hour
+            cache.set(cache_key, True, 3600)
+            return True
+
     def send_sms(self, row):
         for data in row:
-            send_sms_via_at(
-                [data[0]], data[2], "sandbox", data[1]
-            )  # can be a celery process
+            if self.flood_control(data[0],data[2]):
+                send_sms_via_at(
+                    [data[0]], data[2], "sandbox", data[1]
+                )  # can be a celery process
