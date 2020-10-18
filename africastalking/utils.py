@@ -13,7 +13,7 @@ def validate_recipients(recipient):
     if isinstance(recipient, list):
         for number in recipient:
             if validate_phone(number):
-                valid_nos.append(number)
+                valid_nos.append(validate_phone(number))
         return valid_nos
 
 
